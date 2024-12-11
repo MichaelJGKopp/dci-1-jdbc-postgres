@@ -1,53 +1,111 @@
 package dev.lpa;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Main {
   public static void main(String[] args) {
+    String folderPath = "src/main/resources";
+    File folder = new File(folderPath);
+    File[] listOfFiles =
+        folder.listFiles((dir, name) -> name.startsWith("query_") && name.endsWith(".sql"));
 
-    // Database credentials
-    String url = "jdbc:postgresql://localhost:5432/oms_db";
-    String user = "postgres";
-    String password = "password";
+    if (listOfFiles != null) {
+      for (File file : listOfFiles) {
+        try {
+          String query = readFile(file);
 
-    try {
+          System.out.println();
+          System.out.println(file.getName().toUpperCase());
+          System.out.println("-".repeat(50));
+          System.out.println(query);
 
-      // Establish the connection
-      Connection connection = DriverManager.getConnection(url, user, password);
-      System.out.println("Connected to database!");
-
-      // Create a statement
-      Statement statement = connection.createStatement();
-
-      // Execute a query
-      String query = "SELECT * FROM customers";
-      ResultSet resultSet = statement.executeQuery(query);
-
-      // Process the result set
-      System.out.printf("%n%-4s %-25s %-25s %s %n", "ID", "Name", "Email", "Address");
-      System.out.println("-".repeat(90));
-
-      while (resultSet.next()) {
-        System.out.printf("%-4d %-25s %-25s %s %n",
-            resultSet.getInt("customer_id"),
-            resultSet.getString("name"),
-            resultSet.getString("email"),
-            resultSet.getString("address")
-        );
+          executeAndDisplayQuery(query);
+          System.out.println("\n" + "=".repeat(120));
+        } catch (IOException | SQLException e) {
+          e.printStackTrace();
+        }
       }
-      System.out.println();
+    }
+  }
 
-      // Close resources
-      resultSet.close();
-      statement.close();
-      connection.close();
-      System.out.println("Connection closed!");
+  private static String readFile(File file) throws IOException {
+    StringBuilder content = new StringBuilder();
+    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        content.append(line).append("\n");
+      }
+    }
+    return content.toString();
+  }
 
-    } catch (Exception e) {
+  private static void executeAndDisplayQuery(String query) throws SQLException {
+    String url = "jdbc:postgresql://localhost:5432/" + System.getenv("DB_NAME");
+    String user = System.getenv("DB_USER");
+    String password = System.getenv("DB_PASSWORD");
+
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+    try {
+      conn = DriverManager.getConnection(url, user, password);
+      stmt = conn.createStatement();
+      boolean hasResults = stmt.execute(query);
+
+      while (hasResults) {
+        rs = stmt.getResultSet();
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columnCount = rsmd.getColumnCount();
+
+        // Print header
+        for (int i = 1; i <= columnCount; i++) {
+          System.out.printf("%-25s", rsmd.getColumnName(i).toUpperCase());
+        }
+        System.out.println();
+        System.out.println("-".repeat(120));
+
+        // Print rows
+        while (rs.next()) {
+          for (int i = 1; i <= columnCount; i++) {
+            System.out.printf("%-25s", rs.getString(i));
+          }
+          System.out.println();
+        }
+
+        // Check for more results
+        hasResults = stmt.getMoreResults();
+      }
+    } catch (SQLException e) {
+      System.err.println("SQLState: " + e.getSQLState());
+      System.err.println("Error Code: " + e.getErrorCode());
+      System.err.println("Message: " + e.getMessage());
+      Throwable t = e.getCause();
+      while (t != null) {
+        System.err.println("Cause: " + t);
+        t = t.getCause();
+      }
       e.printStackTrace();
+
+    } finally {
+
+      if (rs != null) {
+        rs.close();
+      }
+      if (stmt != null) {
+        stmt.close();
+      }
+      if (conn != null) {
+        conn.close();
+      }
     }
   }
 }
