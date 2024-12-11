@@ -13,7 +13,7 @@ import java.sql.Statement;
 
 public class Main {
   public static void main(String[] args) {
-    String folderPath = "src/main/resources";
+    String folderPath = "src/main/resources/" + System.getenv("DB_NAME");
     File folder = new File(folderPath);
     File[] listOfFiles =
         folder.listFiles((dir, name) -> name.startsWith("query_") && name.endsWith(".sql"));
