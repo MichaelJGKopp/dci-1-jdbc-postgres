@@ -9,7 +9,7 @@ public class Main {
   public static void main(String[] args) {
 
     // Database credentials
-    String url = "jdbc:postgresql://localhost:5432/testdb";
+    String url = "jdbc:postgresql://localhost:5432/oms_db";
     String user = "postgres";
     String password = "password";
 
@@ -23,20 +23,22 @@ public class Main {
       Statement statement = connection.createStatement();
 
       // Execute a query
-      String query = "SELECT * FROM users";
+      String query = "SELECT * FROM customers";
       ResultSet resultSet = statement.executeQuery(query);
 
       // Process the result set
-      System.out.println("ID  | Name        | Email");
-      System.out.println("--------------------------");
+      System.out.printf("%n%-4s %-25s %-25s %s %n", "ID", "Name", "Email", "Address");
+      System.out.println("-".repeat(90));
 
       while (resultSet.next()) {
-        System.out.printf("%d   |  %-8s   |  %s%n",
-            resultSet.getInt("id"),
+        System.out.printf("%-4d %-25s %-25s %s %n",
+            resultSet.getInt("customer_id"),
             resultSet.getString("name"),
-            resultSet.getString("email")
+            resultSet.getString("email"),
+            resultSet.getString("address")
         );
       }
+      System.out.println();
 
       // Close resources
       resultSet.close();
