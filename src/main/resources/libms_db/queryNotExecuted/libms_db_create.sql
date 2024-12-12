@@ -3,7 +3,7 @@ create database libms_db
 
 create table public.members
 (
-    members_id serial
+    member_id serial
         constraint members_pk
             primary key,
     name        varchar not null,
@@ -16,7 +16,7 @@ alter table public.members
 
 create table public.books
 (
-    books_id serial
+    book_id serial
         constraint books_pk
             primary key,
     title      varchar        not null,
@@ -33,11 +33,11 @@ create table public.borrow_records
         constraint borrow_records_pk
             primary key,
     member_id  integer not null
-        constraint borrow_records_members_members_id_fk
+        constraint borrow_records_members_member_id_fk
             references public.members
             on delete cascade,
     book_id  integer not null
-        constraint borrow_records_books_books_id_fk
+        constraint borrow_records_books_book_id_fk
             references public.books
             on delete cascade,
     borrow_date   date default current_date not null,
