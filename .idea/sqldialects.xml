@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/src/main/resources/crms_db/queryNotExecuted/crms_db_create.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/crms_db/queryNotExecuted/crms_db_data.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/crms_db/queryNotExecuted/query_SelectAllTables.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/crms_db/query_mostRentedCars.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/crms_db/query_top5CustomersByRentalCount.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/crms_db/query_totalRevenueByCar.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/oms_db/queryNotExecuted/oms_db_create.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/oms_db/queryNotExecuted/oms_db_data.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/oms_db/queryNotExecuted/query_SelectAllTables.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/oms_db/query_CustomerOrderHistory.sql" dialect="PostgreSQL" />

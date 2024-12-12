@@ -1,6 +1,8 @@
 create database oms_db
     with owner postgres;
 
+\c oms_db;
+
 create table public.customers
 (
     customer_id serial
